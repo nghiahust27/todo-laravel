@@ -1247,6 +1247,69 @@
 
 
             @endforelse
+            @if ($todos->hasPages())
+    <div class="mt-6 flex items-center justify-center gap-2">
+
+        {{-- Previous --}}
+        @if ($todos->onFirstPage())
+            <span class="rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-400">
+                ←
+            </span>
+        @else
+            <a
+                href="{{ $todos->previousPageUrl() }}"
+                class="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
+            >
+                ←
+            </a>
+        @endif
+
+
+        {{-- Page Numbers --}}
+        @for ($page = 1; $page <= $todos->lastPage(); $page++)
+
+            @if ($page == $todos->currentPage())
+
+                <span
+                    class="rounded-md bg-blue-600 px-3 py-1.5 text-sm font-medium text-white"
+                >
+                    {{ $page }}
+                </span>
+
+            @else
+
+                <a
+                    href="{{ $todos->url($page) }}"
+                    class="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
+                >
+                    {{ $page }}
+                </a>
+
+            @endif
+
+        @endfor
+
+
+        {{-- Next --}}
+        @if ($todos->hasMorePages())
+
+            <a
+                href="{{ $todos->nextPageUrl() }}"
+                class="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-100"
+            >
+                →
+            </a>
+
+        @else
+
+            <span class="rounded-md bg-gray-100 px-3 py-1.5 text-sm text-gray-400">
+                →
+            </span>
+
+        @endif
+
+    </div>
+@endif
 
 
         </div>

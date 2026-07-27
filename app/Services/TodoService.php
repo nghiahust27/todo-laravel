@@ -6,8 +6,10 @@ use App\Models\User;
 
 class TodoService
 {
-    public function getAll(int $userId, ?string $status=null, ?string $search =null)
+    public function getAll(int $userId, ?string $status=null, 
+    ?string $search =null, int $perPage = 5)
     {
+
         $query = Todo::where('user_id', $userId);
         if ($status){
             $query ->where('status', $status);
@@ -15,7 +17,7 @@ class TodoService
         if($search){
             $query->where('title', 'ILIKE', '%'.$search.'%');
         }
-        return $query->get();
+        return $query->latest()->paginate($perPage)->withQueryString();
     }
     public function create(array $data)
     {
