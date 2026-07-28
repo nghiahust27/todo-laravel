@@ -145,7 +145,32 @@
         /* ========================================
            ADD BUTTON
         ======================================== */
+        .trash-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 
+    padding: 12px 18px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+
+    background: #ffffff;
+    color: #4b5563;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+}
+
+.trash-btn:hover {
+    background: #f9fafb;
+    color: #111827;
+    border-color: #d1d5db;
+}
         .add-btn {
             display: inline-flex;
 
@@ -798,20 +823,38 @@
 
     <div class="page-header">
 
+    <div class="page-title">
 
-        <div class="page-title">
+        <h1>
+            My Todos
+        </h1>
 
-            <h1>
-                My Todos
-            </h1>
+        <p>
+            Keep track of your tasks and get things done.
+        </p>
 
-            <p>
-                Keep track of your tasks and get things done.
-            </p>
-
-        </div>
+    </div>
 
 
+    {{-- Action Buttons --}}
+    <div class="header-actions">
+
+        {{-- Trash --}}
+        <a
+            href="{{ route('todos.trash') }}"
+            class="trash-btn"
+        >
+
+            <span>
+                🗑
+            </span>
+
+            Trash
+
+        </a>
+
+
+        {{-- Add New Todo --}}
         <a
             href="{{ route('todos.create') }}"
             class="add-btn"
@@ -825,8 +868,9 @@
 
         </a>
 
-
     </div>
+
+</div>
 
 
 
@@ -1108,21 +1152,48 @@
 
                             @endif
 
-
-
                             <!-- DUE DATE -->
 
-                            @if ($todo->due_date)
+                            @php
+                            $daysLeft = now()->startOfDay()->diffInDays(
+                                \Carbon\Carbon::parse($todo->due_date)->startOfDay(),
+                                false
+                            );
+                        @endphp
 
-                                <span class="due-date">
+                        <span
+                            class="
+                                @if ($daysLeft < 0)
+                                    text-red-700 font-bold
+                                @elseif ($daysLeft <= 1)
+                                    text-red-600 font-semibold
+                                @elseif ($daysLeft <= 3)
+                                    text-orange-500 font-semibold
+                                @else
+                                    text-gray-600
+                                @endif
+                            "
+                        >
+                            {{ \Carbon\Carbon::parse($todo->due_date)->format('d/m/Y') }}
 
-                                    Due:
-
-                                    {{ \Carbon\Carbon::parse($todo->due_date)->format('M d, Y') }}
-
+                            @if ($daysLeft < 0)
+                                <span class="ml-1 text-xs">
+                                    (Overdue)
                                 </span>
-
+                            @elseif ($daysLeft == 0)
+                                <span class="ml-1 text-xs">
+                                    (Due today)
+                                </span>
+                            @elseif ($daysLeft == 1)
+                                <span class="ml-1 text-xs">
+                                    (Due tomorrow)
+                                </span>
+                            @elseif ($daysLeft <= 3)
+                                <span class="ml-1 text-xs">
+                                    ({{ $daysLeft }} days left)
+                                </span>
                             @endif
+                        </span>
 
 
                         </div>
@@ -1155,32 +1226,21 @@
                         <!-- DELETE -->
 
                         <form
-                            method="POST"
                             action="{{ route('todos.destroy', $todo->id) }}"
-                            onsubmit="
-                                return confirm(
-                                    'Are you sure you want to delete this todo?'
-                                );
-                            "
+                            method="POST"
+                            class="inline"
+                            onsubmit="return confirm('Bạn có chắc muốn xóa Todo này không?')"
                         >
-
                             @csrf
-
                             @method('DELETE')
-
 
                             <button
                                 type="submit"
-                                class="action-btn delete-btn"
+                                class="rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
                             >
-
                                 Delete
-
                             </button>
-
-
                         </form>
-
 
                     </div>
 
@@ -1231,7 +1291,12 @@
                         </p>
 
                     @endif
-
+                    <a
+                        href="{{ route('todos.trash') }}"
+                        class="rounded-lg bg-gray-700 px-5 py-3 font-medium text-white hover:bg-gray-800"
+                    >
+                        Trash
+                    </a>
 
                     <a
                         href="{{ route('todos.create') }}"

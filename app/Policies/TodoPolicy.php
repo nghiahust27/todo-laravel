@@ -11,17 +11,17 @@ class TodoPolicy
 
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     public function view(User $user, Todo $todo): bool
     {
-        return $user->id === $todo-> user_id;
+        return $user->id === $todo-> user_id ;
     }
 
     public function create(User $user): bool
     {
-        return $user->id === $todo-> user_id;
+        return true;
     }
 
     public function update(User $user, Todo $todo): bool
@@ -41,6 +41,6 @@ class TodoPolicy
 
     public function forceDelete(User $user, Todo $todo): bool
     {
-        return false;
+        return $user->id === $todo-> user_id;
     }
 }

@@ -19,8 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-Route::get('/todos/{id}/edit', [TodoController::class, 'edit'])
-    ->name('todos.edit');
+
 Route::middleware('auth')->group(function(){
     Route::get('/todos', [TodoController::class, 'index'])->name('todos.index');
     Route::get('/todos/create', [TodoController::class, 'create'])->name('todos.create');
@@ -28,7 +27,12 @@ Route::middleware('auth')->group(function(){
     Route::get('todos/{id}/edit', [TodoController::class, 'edit'])->name('todos.edit');
     Route::put('/todos/{id}', [TodoController::class, 'update'])->name('todos.update');
     Route::delete('/todos/{id}', [TodoController::class, 'destroy'])->name('todos.destroy');
-
+    Route::get('/todos/trash', [TodoController::class, 'trash'])
+    ->name('todos.trash');
+    Route::patch('/todos/{id}/restore', [TodoController::class, 'restore'])
+        ->name('todos.restore');
+    Route::delete('/todos/{id}/force-delete', [TodoController::class, 'forceDelete'])
+        ->name('todos.forceDelete');
 });
 
 require __DIR__.'/auth.php';

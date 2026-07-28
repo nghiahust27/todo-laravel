@@ -38,5 +38,20 @@ class TodoService
         $todo = Todo::findOrFail($id);
         return $todo->delete();
     }
+    public function getTrashed()
+    {
+        return Todo::onlyTrashed()->latest('deleted_at')
+        ->paginate(5);
+    }
+    public function  restore(int $id)
+     {
+        $todo = Todo::onlyTrashed()->findOrFail($id);
+        $todo->restore();
+        return $todo;      
+    }
+    public function forceDelete(int $id)  {
+        $todo = Todo::onlyTrashed()->findOrFail($id);
+        $todo ->forceDelete();       
+    }
 
 }

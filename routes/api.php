@@ -7,9 +7,6 @@ use App\Http\Controllers\Api\TodoController;
 use PhpParser\Node\Expr\FuncCall;
 
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
 
 Route::prefix('auth')->group(function(){
     Route::post('/register',[AuthController::class, 'register']);

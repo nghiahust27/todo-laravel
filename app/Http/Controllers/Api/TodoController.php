@@ -16,7 +16,7 @@ class TodoController extends Controller
         protected TodoService $todoService
     ) { 
     }
-
+    
     public function index(Request $request)
     {   
         $status = $request->query('status');
@@ -40,13 +40,14 @@ class TodoController extends Controller
             'message' => 'Task created successfully'
         ])->response()->setStatusCode(201);
     }
-
     public function show(int $id)
     {
         $todo = $this->todoService->getById($id);
-        $this -> authorize('view', $todo);
+        $this->authorize('view', $todo);
+    
         return new TodoResource($todo);
     }
+
 
     public function update(UpdateTodoRequest $request,int $id) {
         $todo = $this->todoService->getById($id);

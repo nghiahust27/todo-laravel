@@ -20,10 +20,10 @@ class UpdateTodoRequest extends FormRequest
 
         return [
         'title' => 'sometimes|string|max:255',
-        'description' => 'nullable|string',
+        'description' => 'sometimes|nullable|string',
         'status' => 'sometimes|in:todo,doing,done',
-        'due_date' => 'nullable|date',
-        ];
+        'due_date' => 'sometimes|nullable|date',
+    ];
    
     }
 }

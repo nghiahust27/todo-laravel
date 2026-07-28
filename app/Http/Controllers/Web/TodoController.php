@@ -23,7 +23,7 @@ class TodoController extends Controller
         $status = $request->query('status');
         $search = $request->query('search');
         $todos = $this->todoService->getAll(auth()->id(), $status, $search);
-
+            
         return view('todos.index', compact('todos', 'status', 'search'));
     }
     public function create()
@@ -57,6 +57,26 @@ class TodoController extends Controller
         return redirect()->route('todos.index')
         ->with('success', 'Todo deleted successfully');
     }
-
+    public function trash()
+    {
+        $todos = $this ->todoService->getTrashed();
+        return view('todos.trash', compact('todos'));
+    }
+    public function forceDelete(int $id)
+    {
+        $todo = Todo::onlyTrashed()->findOrFail($id);
+        $this ->authorize('forceDelete', $todo);
+        $this -> todoService->forceDelete($id);
+        return redirect()->route('todos.trash')
+        ->with('success', 'Todo deleted');
+    }
+    public function restore(int $id) {
+        $todo = Todo::onlyTrashed()->findOrFail($id);
+        $this->authorize('restore', $todo);
+        $this->todoService->restore($id);
+        return redirect()->route('todos.trash')
+        ->with('success', "Todo restored successfully");
+        
+    }
 
 }
