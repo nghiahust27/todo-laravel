@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\TodoController;
 use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\FacebookController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,4 +37,16 @@ Route::middleware('auth')->group(function(){
         ->name('todos.forceDelete');
 });
 
+Route::get('/auth/google', [GoogleController::class, 'redirect'])
+    ->name('google.login');
+
+Route::get('/auth/google/callback', [GoogleController::class, 'callback'])
+    ->name('google.callback');
+
+
+Route::get('/auth/facebook', [FacebookController::class, 'redirect'])
+    ->name('facebook.login');
+
+Route::get('/auth/facebook/callback', [FacebookController::class, 'callback'])
+    ->name('facebook.callback');
 require __DIR__.'/auth.php';

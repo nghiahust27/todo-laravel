@@ -1291,12 +1291,7 @@
                         </p>
 
                     @endif
-                    <a
-                        href="{{ route('todos.trash') }}"
-                        class="rounded-lg bg-gray-700 px-5 py-3 font-medium text-white hover:bg-gray-800"
-                    >
-                        Trash
-                    </a>
+                
 
                     <a
                         href="{{ route('todos.create') }}"

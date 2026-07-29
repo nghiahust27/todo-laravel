@@ -57,7 +57,7 @@ class TodoController extends Controller
 
         return (new TodoResource($todo))->additional([
             'success'=>true,
-            'message' => 'Task created successfully'
+            'message' => 'Task updated successfully'
         ])->response()->setStatusCode(201);
     }
 

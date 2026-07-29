@@ -13,13 +13,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
 
     use HasFactory, Notifiable, HasApiTokens;
-    protected $fillable = ['name', 'email', 'password'];
+    protected $fillable = ['name', 'email', 'password', 'google_id', 'facebook_id'];
     protected $hidden = ['password', 'remember_token'];
 
     public function todos(): HasMany

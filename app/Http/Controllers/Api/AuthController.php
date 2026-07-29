@@ -48,11 +48,5 @@ class AuthController extends Controller
             'data' => $request->user(),
         ]);
     }
-    // public function me(Todo $todo)
-    // {
-    //     return response() ->json([
-    //         'success'=>true,
-    //         'data' => $request->user(),
-    //     ]);
-    // }
+
 }
