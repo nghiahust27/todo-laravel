@@ -1,15 +1,16 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>My Todos - Todo App</title>
 
-    <style>
+<title>Groups - Todo App</title>
 
-        * {
+<style>
+    * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -115,7 +116,24 @@
         /* ========================================
            HEADER
         ======================================== */
+        .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        background: white;
+        color: #0faab1;
+        border: 1px solid #15b5bc;
+        padding: 11px 18px;
+        border-radius: 8px;
+        font-size: 14px;
+        transition: 0.2s;
+    }
 
+    .back-btn:hover {
+        background: #15b5bc;
+        color: white;
+    }
         header {
             height: 75px;
             background: white;
@@ -312,15 +330,10 @@
 
         .list-header {
             display: flex;
-
             align-items: flex-start;
-
             justify-content: space-between;
-
             gap: 25px;
-
             padding-bottom: 25px;
-
             border-bottom: 1px solid #e5eeee;
         }
 
@@ -836,11 +849,11 @@
 
     </style>
 
+
+
 </head>
 
-
 <body>
-
 
 <!-- ========================================
      HEADER
@@ -849,55 +862,43 @@
 <header>
 
 
-    <div class="logo">
-
-        <div class="logo-icon">
-            ✓
-        </div>
-
-        Todo App
-
+<div class="logo">
+    <div class="logo-icon">
+        ✓
     </div>
 
+    Todo App
+</div>
 
-    <div class="header-right">
+<div class="header-right">
 
+    @auth
 
-        @auth
+        <span class="user-name">
+            Hello,
+            {{ Auth::user()->name }}
+        </span>
 
-            <span class="user-name">
+        <form
+            method="POST"
+            action="{{ route('logout') }}"
+        >
+            @csrf
 
-                Hello,
-                {{ Auth::user()->name }}
-
-            </span>
-
-
-            <form
-                method="POST"
-                action="{{ route('logout') }}"
+            <button
+                type="submit"
+                class="logout-btn"
             >
+                Log Out
+            </button>
+        </form>
 
-                @csrf
+    @endauth
 
-                <button
-                    type="submit"
-                    class="logout-btn"
-                >
-                    Log Out
-                </button>
-
-            </form>
-
-        @endauth
-
-
-    </div>
+</div>
 
 
 </header>
-
-
 
 <!-- ========================================
      MAIN
@@ -906,190 +907,162 @@
 <main class="container">
 
 
-    <!-- ========================================
-         PAGE HEADER
-    ======================================== -->
+<!-- ========================================
+     PAGE HEADER
+======================================== -->
 
-    <div class="page-header">
+<div class="page-header">
 
     <div class="page-title">
 
         <h1>
-            My Todos
+            Groups
         </h1>
-
         <p>
-            Keep track of your tasks and get things done.
+            Join groups and collaborate on shared tasks.
         </p>
-
     </div>
 
-
-    {{-- Action Buttons --}}
-    
     <div class="header-actions">
         <a
-            href="{{ route('todos.trash') }}"
-            class="trash-btn"
-        >
-
-            <span>
-                🗑
-            </span>
-
-            Trash
-
-        </a>
-        <a
-            href="{{ route('friends.index') }}"
-            class="add-btn"
-        >
-                Your Friends
-        </a>
-        <a
             href="{{ route('groups.index') }}"
-            class="add-btn"
+            class="back-btn"
         >
-                Your Groups
+            ←
+            Back 
         </a>
-        {{-- Trash --}}
-    
-        {{-- Add New Todo --}}
         <a
-            href="{{ route('todos.create') }}"
+            href="{{ route('groups.todos.create', ['groupId' => $group->id]) }}"
             class="add-btn"
         >
             <span>
                 +
             </span>
-            Add New Todo
+            Create New Task
         </a>
+        <a
+            href="{{ route('groups.join.form') }}"
+            class="add-btn"
+        >
+            <span>
+                +
+            </span>
+            Join New Group
+        </a>
+
     </div>
+
 </div>
 
 
+<!-- ========================================
+     FLASH MESSAGES
+======================================== -->
+@if (session('success'))
 
-    <!-- ========================================
-         TODO CONTAINER
-    ======================================== -->
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
 
-    <div class="todo-container">
+@endif
+
+@if (session('error'))
+
+    <div class="alert alert-error">
+        {{ session('error') }}
+    </div>
+
+@endif
 
 
-        <!-- ========================================
-             LIST HEADER
-        ======================================== -->
+<!-- ========================================
+     FRIEND CONTAINER
+======================================== -->
+
+<div class="todo-container">
 
         <div class="list-header">
-
-
             <div class="list-title">
-
                 <h2>
-                    Your Tasks
+                    Your Group Tasks
                 </h2>
-
-
                 <div class="filter-wrapper">
-
-
                     <!-- ========================================
                          STATUS FILTER
                     ======================================== -->
 
                     <div class="filter-links">
-
-
-                        <!-- ALL -->
-
+                        <!-- ALL-->
                         <a
-                            href="{{ route('todos.index', array_filter([
+                            href="{{ route('groups.todos.index',
+                                array_filter([
+                                'groupId'=>$group->id,
                                 'search' => request('search')
                             ])) }}"
                             class="{{ request('status') === null ? 'active' : '' }}"
                         >
-
                             All
-
                         </a>
-
-
                         <!-- TODO -->
-
                         <a
-                            href="{{ route('todos.index', array_filter([
+                            href="{{ route('groups.todos.index',
+                                array_filter([
+                                'groupId'=>$group->id,
                                 'status' => 'todo',
                                 'search' => request('search')
                             ])) }}"
                             class="{{ request('status') === 'todo' ? 'active' : '' }}"
                         >
-
                             Todo
-
                         </a>
-
-
                         <!-- DOING -->
 
                         <a
-                            href="{{ route('todos.index', array_filter([
+                            href="{{ route('groups.todos.index',
+                                array_filter([
+                                'groupId'=>$group->id,
                                 'status' => 'doing',
                                 'search' => request('search')
                             ])) }}"
                             class="{{ request('status') === 'doing' ? 'active' : '' }}"
                         >
-
                             Doing
-
                         </a>
-
-
                         <!-- DONE -->
-
                         <a
-                            href="{{ route('todos.index', array_filter([
+                            href="{{ route('groups.todos.index',
+                                array_filter([
+                                'groupId'=>$group->id,
                                 'status' => 'done',
                                 'search' => request('search')
                             ])) }}"
                             class="{{ request('status') === 'done' ? 'active' : '' }}"
                         >
-
                             Done
-
                         </a>
-
-
                     </div>
-
-
-
                     <!-- ========================================
                          SEARCH
                     ======================================== -->
-
                     <form
                         method="GET"
-                        action="{{ route('todos.index') }}"
+                        action="{{ route('groups.todos.index',
+                                array_filter([
+                                'groupId'=>$group->id,
+                            ])) }}"
                         class="search-form"
                     >
-
-
                         <!--
                             Giữ lại status hiện tại
                             khi người dùng search
                         -->
-
                         @if(request('status'))
-
                             <input
                                 type="hidden"
                                 name="status"
                                 value="{{ request('status') }}"
                             >
-
                         @endif
-
-
                         <input
                             type="text"
                             name="search"
@@ -1106,12 +1079,10 @@
                         @if(request('search'))
 
                             <a
-                                href="{{ route(
-                                    'todos.index',
-                                    request('status')
-                                        ? ['status' => request('status')]
-                                        : []
-                                ) }}"
+                                href="{{route('groups.todos.index',
+                                array_filter([
+                                'groupId'=>$group->id,
+                            ]))  }}"
                                 class="clear-search"
                             >
                                 Clear
@@ -1126,56 +1097,34 @@
             ======================================== -->
 
             <div class="task-count">
-                {{ $todos->count() }}
-                {{ $todos->count() === 1 ? 'task' : 'tasks' }}
+                {{ $taskLists->count() }}
+                {{ $taskLists->count() === 1 ? 'task' : 'tasks' }}
             </div>
         </div>
         <!-- ========================================
              TODO LIST
         ======================================== -->
-
         <div class="todo-list">
-
-
-            @forelse ($todos as $todo)
-
-
+            @forelse ($taskLists as $todo)
                 <!-- ========================================
                      TODO CARD
                 ======================================== -->
-
                 <div class="todo-card">
-
-
                     <!-- ========================================
                          TODO CONTENT
                     ======================================== -->
-
                     <div class="todo-content">
-
-
                         <!-- TITLE -->
-
                         <div class="todo-title">
 
                             {{ $todo->title }}
-
                         </div>
-
-
-
                         <!-- DESCRIPTION -->
-
                         @if ($todo->description)
-
                             <div class="todo-description">
-
                                 {{ $todo->description }}
-
                             </div>
-
                         @endif
-
                         <!-- META -->
                         <div class="todo-meta">
                             <!-- STATUS -->
@@ -1272,20 +1221,16 @@
                         <!-- EDIT -->
 
                         <a
-                            href="{{ route('todos.edit', $todo->id) }}"
+                            href="{{ route('groups.todos.edit',['groupId' => $group->id,
+                            'id'=>$todo->id]) }}"
                             class="action-btn edit-btn"
                         >
-
                             Edit
-
                         </a>
-
-
-
                         <!-- DELETE -->
-
                         <form
-                            action="{{ route('todos.destroy', $todo->id) }}"
+                            action="{{ route('groups.todos.destroy', ['groupId' => $group->id,
+                            'id'=>$todo->id]) }}"
                             method="POST"
                             class="inline"
                             onsubmit="return confirm('Bạn có chắc muốn xóa Todo này không?')"
@@ -1300,37 +1245,19 @@
                                 Delete
                             </button>
                         </form>
-
                     </div>
-
-
                 </div>
-
-
             @empty
 
-
-                <!-- ========================================
-                     EMPTY STATE
-                ======================================== -->
-
                 <div class="empty-state">
-
-
                     <div class="empty-icon">
                         ✓
                     </div>
-
-
                     <h2>
                         No Todos Found
                     </h2>
-
-
                     @if(request('search') || request('status'))
-
                         <p>
-
                             No tasks match your current
                             filter or search.
 
@@ -1339,22 +1266,15 @@
                     @else
 
                         <p>
-
                             You don't have any tasks yet.
                             Create your first todo and start getting things done.
-
                         </p>
-
                     @endif
-                
-
                     <a
-                        href="{{ route('todos.create') }}"
+                        href="{{ route('groups.todos.create', ['groupId' => $group->id]) }}"
                         class="add-btn"
                     >
-
                         + Create New Todo
-
                     </a>
 
 
@@ -1362,11 +1282,11 @@
 
 
             @endforelse
-            @if ($todos->hasPages())
+            @if ($taskLists->hasPages())
 
         <div class="pagination-wrapper">
 
-            {{ $todos->withQueryString()->links() }}
+            {{ $taskLists->withQueryString()->links() }}
 
         </div>
 
@@ -1378,23 +1298,16 @@
 
     </div>
 
-
 </main>
-
-
-
 <!-- ========================================
      FOOTER
 ======================================== -->
 
 <footer>
 
-    © 2026 Todo App Inc.
-    All rights reserved.
+© 2026 Todo App Inc.
+All rights reserved.
 
 </footer>
-
-
 </body>
-
 </html>

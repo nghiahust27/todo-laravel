@@ -7,16 +7,15 @@ use App\Http\Requests\Todo\StoreTodoRequest;
 use Illuminate\Http\Request;
 use App\Services\TodoService;
 use App\Http\Requests\Web\UpdateTodoRequest;
+use App\Models\Group;
 use App\Models\Todo;
 use Illuminate\Support\Facades\Gate;
 
 class TodoController extends Controller
 {
-    protected TodoService $todoService;
-    public function __construct(TodoService $todoService)
-    {
-        $this ->todoService = $todoService;
-    }
+    public function __construct(
+        private TodoService $todoService
+    ) {}
     public function index(Request $request)
     {
   
@@ -30,9 +29,13 @@ class TodoController extends Controller
     {
         return view('todos.create');
     }
+    
     public function store(StoreTodoRequest $request)
     {
-        $this -> todoService -> create($request->validated());
+        $this->todoService->create(
+        $request->validated(),
+        $request->user()
+    );
         return redirect()->route('todos.index')
         ->with('success', 'Todo created successfully');
     }
@@ -77,6 +80,52 @@ class TodoController extends Controller
         return redirect()->route('todos.trash')
         ->with('success', "Todo restored successfully");
         
+    }
+
+    //       IN GROUP
+    public function createGroupTodo(int $groupId) { 
+        $this->authorize(
+            'createInGroup',
+            [Todo::class, $groupId]
+        );
+        $group = Group::findOrFail($groupId);
+        return view('groups.createtodos', compact('group') );
+    }
+    public function storeGroupTodo( StoreTodoRequest $request,
+        int $groupId ) {
+        $this->authorize( 'inGroup',[Todo::class, $groupId]);
+        $this->todoService->createGroupTodo(
+            $request->validated(),
+            $request->user(),
+            $groupId
+        );
+        return redirect() 
+            ->route('groups.todos.index', $groupId   )
+            ->with('success','Task created successfully' );
+    }
+    public function editGroupTodo(int $id, int $groupId){
+        $todo = $this -> todoService -> getById($id);
+        $this->authorize( 'inGroup',[Todo::class, $groupId]);
+        return view('groups.todos.edit', $groupId, compact('todo'));
+    }
+    public function updateGroupTodo(UpdateTodoRequest $request, int $id,
+    int $groupId)
+    {
+        $todo = $this -> todoService -> getById($id);
+        $this->authorize( 'inGroup',[Todo::class, $groupId]);
+        $this->authorize('update', $todo);
+        $this -> todoService ->update($id, $request->validated());
+        return redirect()->route('groups.todos.index')
+        ->with('success', 'Todo updated successfully');
+    }
+    public function destroyGroupTodo(int $id, int $groupId)
+    {
+        $todo = $this -> todoService ->getById($id);
+        $this->authorize( 'inGroup',[Todo::class, $groupId]);
+        $this->authorize('delete', $todo);
+        $this ->todoService->forceDelete($id);
+        return redirect()->route('groups.todos.index')
+        ->with('success', 'Todo deleted successfully');
     }
 
 }

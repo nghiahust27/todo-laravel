@@ -6,6 +6,9 @@ use App\Http\Controllers\Web\TodoController;
 use Illuminate\Routing\RouteGroup;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\FacebookController;
+use App\Http\Controllers\Web\FriendController;
+use App\Http\Controllers\Auth\MicrosoftController;
+use App\Http\Controllers\Web\GroupController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -35,6 +38,74 @@ Route::middleware('auth')->group(function(){
         ->name('todos.restore');
     Route::delete('/todos/{id}/force-delete', [TodoController::class, 'forceDelete'])
         ->name('todos.forceDelete');
+
+
+
+    Route::prefix('friends')->name('friends.')->group(function(){
+        Route::get('/', [FriendController::class, 'index'])->name('index');
+    
+        Route::get('/search', [FriendController::class, 'search'])
+        ->name('search');
+
+        Route::get('/{friendId}/todos', [FriendController::class, 'friendTodos'])
+        ->name('todos');
+
+        Route::post('/{friendId}/request', [FriendController::class, 'sendRequest'])
+        ->name('request');
+        
+        Route::patch('/request/{requestId}/accept', 
+        [FriendController::class, 'acceptRequest'])
+        ->name('requests.accept');
+
+        Route::patch('/request/{requestId}/reject', 
+        [FriendController::class, 'rejectRequest'])
+        ->name('requests.reject');
+
+        Route::delete('/{friendId}/remove', [FriendController::class, 'removeFriend'])
+        ->name('remove');
+
+        Route::delete('/{requestId}/removerequest', [FriendController::class, 'removeRequest'])
+        ->name('removerequest');
+    });
+    Route::prefix('groups')->name('groups.')->group(function(){
+        Route::get('/', [GroupController::class, 'index'])
+        ->name('index');
+
+        Route::delete('/{groupId}/leave', [GroupController::class,
+        'leaveGroup'])->name('leave');
+
+        Route::get('/create', [GroupController::class, 
+        'createGroup'])->name('create');
+
+        Route::get('/join', [GroupController::class, 'showJoinForm'])
+        ->name('join.form');
+
+        Route::post('/join', [GroupController::class, 'joinGroup'
+        ])->name('join');
+
+        Route::get('/create', [GroupController::class, 'create'])
+        ->name('create');
+
+        Route::post('/create', [GroupController::class, 'createGroup'])
+        ->name('store');
+
+
+        Route::prefix('{groupId}/todos')->name('todos.')->group(function(){
+            Route::get('/',[GroupController::class,
+            'inGroupIndex'])->name('index');
+            Route::get('/create', [TodoController::class,
+             'createGroupTodo'])->name('create');
+            Route::post('/', [TodoController::class, 'storeGroupTodo'])
+            ->name('store');
+            Route::get('todos/{id}/edit', [TodoController::class, 
+            'editGroupTodo'])->name('edit');
+            Route::put('/todos/{id}', [TodoController::class,
+            'updateGroupTodo'])->name('update');
+            Route::delete('/todos/{id}', [TodoController::class, 
+            'destroyGroupTodo'])->name('destroy');
+
+        });
+    });
 });
 
 Route::get('/auth/google', [GoogleController::class, 'redirect'])
@@ -49,4 +120,11 @@ Route::get('/auth/facebook', [FacebookController::class, 'redirect'])
 
 Route::get('/auth/facebook/callback', [FacebookController::class, 'callback'])
     ->name('facebook.callback');
+
+Route::get('/auth/microsoft', [MicrosoftController::class, 'redirect'])
+    ->name('microsoft.login');
+
+Route::get('/auth/microsoft/callback', [MicrosoftController::class, 'callback'])
+    ->name('microsoft.callback');
+
 require __DIR__.'/auth.php';

@@ -49,13 +49,13 @@
 
             margin: 0 auto 15px;
         }
-        .google-login {
+        .social-login {
             display: flex;
             justify-content: center;
             margin-top: 15px;
         }
 
-        .google-btn {
+        .social-btn {
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -81,56 +81,16 @@
             transition: 0.2s;
         }
 
-        .google-btn:hover {
+        .social-btn:hover {
             background: #f9fafb;
             border-color: #9ca3af;
         }
 
-        .google-icon {
+        .social-icon {
             width: 18px;
             height: 18px;
         }
-        .facebook-login {
-            display: flex;
-            justify-content: center;
-            margin-top: 10px;
-        }
-
-        .facebook-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-
-            width: auto;
-            height: 40px;
-
-            padding: 0 14px;
-
-            background: white;
-            color: #374151;
-
-            border: 1px solid #d1d5db;
-            border-radius: 8px;
-
-            font-size: 14px;
-            font-weight: 600;
-
-            text-decoration: none;
-
-            transition: 0.2s;
-        }
-
-        .facebook-btn:hover {
-            background: #f9fafb;
-            border-color: #9ca3af;
-        }
-
-        .facebook-icon {
-            width: 18px;
-            height: 18px;
-        }
-
+       
         .logo h1 {
             color: #13aeb5;
             font-size: 28px;
@@ -443,11 +403,11 @@
 
 <!-- Google Login -->
 
-        <div class="google-login">
+        <div class="social-login">
 
-            <a href="{{ route('google.login') }}" class="google-btn">
+            <a href="{{ route('google.login') }}" class="social-btn">
 
-                <svg class="google-icon" viewBox="0 0 24 24">
+                <svg class="social-icon" viewBox="0 0 24 24">
                     <path fill="#4285F4"
                         d="M21.35 12.27c0-.79-.07-1.55-.22-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.69 2.91-4.18 2.91-7.42z"/>
 
@@ -466,11 +426,11 @@
             </a>
 
         </div>
-        <div class="facebook-login">
+        <div class="social-login">
 
-        <a href="{{ route('facebook.login') }}" class="facebook-btn">
+        <a href="{{ route('facebook.login') }}" class="social-btn">
 
-            <svg class="facebook-icon" viewBox="0 0 24 24">
+            <svg class="social-icon" viewBox="0 0 24 24">
                 <path
                     fill="#1877F2"
                     d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07c0 6.02 4.39 11 10.13 11.93v-8.43H7.08v-3.5h3.05V9.4c0-3.03 1.79-4.72 4.54-4.72 1.31 0 2.68.24 2.68.24v2.96h-1.51c-1.49 0-1.95.93-1.95 1.87v2.24h3.32l-.53 3.5h-2.79V24C19.61 23.07 24 18.09 24 12.07z"
@@ -482,6 +442,22 @@
         </a>
 
     </div>
+        <div class="social-login">
+
+            <a href="{{ route('microsoft.login') }}" class="social-btn">
+
+                <svg class="social-icon" viewBox="0 0 23 23">
+                    <rect width="11" height="11" x="0" y="0" fill="#F25022"/>
+                    <rect width="11" height="11" x="12" y="0" fill="#7FBA00"/>
+                    <rect width="11" height="11" x="0" y="12" fill="#00A4EF"/>
+                    <rect width="11" height="11" x="12" y="12" fill="#FFB900"/>
+                </svg>
+
+                Continue with Microsoft
+
+            </a>
+
+        </div>
         
         
     </div>
